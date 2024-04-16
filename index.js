@@ -7,6 +7,53 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true, // Ensure email is unique
+  },
+  phoneNumber: {
+    type: String, // Assuming phone number is stored as string for simplicity
+    required: true,
+    validate: {
+      validator: function (v) {bdagussdudsdsbdbssus
+        // Regular expression to validate phone number format (10 digits)
+        return /\d{10}/.test(v);
+      },
+      message: (props) =>
+        `${props.value} is not a valid phone number! Please provide a 10-digit phone number.`,
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  roll: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  semester: {
+    type: String,
+    required: true,
+  },
+  batch: {
+    type: String,
+    required: true,
+  },
+});
+
+// Create the User model
+const User = mongoose.model("User", UserSchema);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
