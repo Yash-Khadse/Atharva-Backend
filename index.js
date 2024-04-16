@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     type: String, // Assuming phone number is stored as string for simplicity
     required: true,
     validate: {
-      validator: function (v) {bdagussdudsdsbdbssus
+      validator: function (v) {
         // Regular expression to validate phone number format (10 digits)
         return /\d{10}/.test(v);
       },
