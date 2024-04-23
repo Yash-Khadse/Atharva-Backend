@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -8,8 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const PORT = process.env.PORT || 7887;
-
+// Define the user schema
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -29,17 +27,14 @@ const UserSchema = new mongoose.Schema({
         return /\d{10}/.test(v);
       },
       message: (props) =>
-        `${props.value} is not a valid phone number! Please provide a 10-digit phone number.`,
+        ${props.value} is not a valid phone number! Please provide a 10-digit phone number.,
     },
   },
   password: {
     type: String,
     required: true,
   },
-  password: {
-    type: String,
-    required: true,
-  },
+ 
   roll: {
     type: String,
     required: true,
@@ -49,33 +44,27 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  batch: {
-    type: String,
-    required: true,
-  },
+ 
 });
 
 // Create the User model
 const User = mongoose.model("User", UserSchema);
 
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`MongoDB Connected ${conn.connection.host}`);
-  } catch (error) {
-    console.log(error);
-    // process.exit(1);
-  }
-};
+// Establish MongoDB connection
+mongoose
+  .connect(
+    "mongodb+srv://umesh:atharva@cluster0.f2zvgdz.mongodb.net/"
+  )
+  .then(() => {
+    console.log("Connected to MongoDB successfully!");
+  })
+  .catch((error) => {
+    console.error("MongoDB connection error:", error);
+  });
 
+// Root route
 app.get("/", async (req, res) => {
   res.send("Hello");
-});
-
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Listing on port ${PORT}`);
-  });
 });
 
 // Route to handle user login
@@ -119,16 +108,15 @@ app.post("/signup", async (req, res) => {
       roll,
       email,
       phoneNumber,
-      password,
       semester,
-      batch,
+      password
     });
 
     // Save the new user to the database
     await newUser.save();
 
     // Send response with created user data
-    res.status(201).json(newUser).message("user registered");
+    res.status(201).json(newUser);
   } catch (error) {
     console.error("Error saving user:", error);
 
@@ -146,4 +134,23 @@ app.post("/signup", async (req, res) => {
       return res.status(500).json({ error: "Internal server error" });
     }
   }
+});
+//name
+app.get("/user/:roll", async (req, res) => {
+  try {
+    const user = await User.findOne({ roll: req.params.roll });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Start the server
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(Server is running on port ${PORT});
 });
