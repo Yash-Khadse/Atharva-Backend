@@ -139,6 +139,7 @@ app.post("/signup", async (req, res) => {
 app.get("/user/:roll", async (req, res) => {
   try {
     const user = await User.findOne({ roll: req.params.roll });
+    console.log(user);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
