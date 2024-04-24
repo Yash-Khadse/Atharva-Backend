@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
         return /\d{10}/.test(v);
       },
       message: (props) =>
-        ${props.value} is not a valid phone number! Please provide a 10-digit phone number.,
+        `${props.value} is not a valid phone number! Please provide a 10-digit phone number.`,
     },
   },
   password: {
@@ -139,7 +139,6 @@ app.post("/signup", async (req, res) => {
 app.get("/user/:roll", async (req, res) => {
   try {
     const user = await User.findOne({ roll: req.params.roll });
-    console.log(user);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -153,5 +152,5 @@ app.get("/user/:roll", async (req, res) => {
 // Start the server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-  console.log(Server is running on port ${PORT});
+  console.log(`Server is running on port ${PORT}`);
 });
